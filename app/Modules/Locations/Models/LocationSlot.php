@@ -12,9 +12,9 @@ class LocationSlot extends Model
 {
     use ModuleHasFactory;
 
-    protected $fillable = ['location_id', 'date', 'available'];
+    protected $fillable = ['location_id', 'date', 'available', 'price'];
 
-    protected $casts = ['date' => 'date:Y-m-d'];
+    protected $casts = ['date' => 'date:Y-m-d', 'price' => 'double'];
 
     public function location(): BelongsTo
     {

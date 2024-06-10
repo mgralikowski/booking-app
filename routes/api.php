@@ -10,3 +10,4 @@ Route::apiResources([
     'slots' => LocationSlotController::class,
     'reservations' => ReservationController::class,
 ]);
+Route::post('reservations/calculate', [ReservationController::class, 'calculate']);

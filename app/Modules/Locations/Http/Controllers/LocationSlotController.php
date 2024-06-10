@@ -22,7 +22,7 @@ class LocationSlotController extends Controller
         // @todo use Action or Repository/Service
         return LocationSlot::updateOrCreate(
             $request->safe()->only(['date', 'location_id']),
-            ['available' => $request->validated('available')]
+            ['available' => $request->validated('available'), 'price' => $request->validated('price')]
         );
         // @todo use ApiResource
     }

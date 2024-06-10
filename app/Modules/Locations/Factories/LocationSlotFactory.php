@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Modules\Locations\Factories;
 
 use App\Modules\Locations\Models\Location;
@@ -21,6 +23,7 @@ class LocationSlotFactory extends Factory
             'location_id' => Location::first(),
             'date' => self::$currentDate->toDateString(), // unique() doesn't play well with dates, @see https://github.com/fzaninotto/Faker/issues/984
             'available' => $this->faker->numberBetween(0, 10),
+            'price' => $this->faker->randomFloat(max: 100),
         ];
     }
 }

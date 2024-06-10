@@ -15,9 +15,9 @@ class Reservation extends Model
 {
     use ModuleHasFactory;
 
-    protected $fillable = ['start_date', 'end_date'];
+    protected $fillable = ['start_date', 'end_date', 'cost'];
 
-    protected $casts = ['start_date' => 'date:Y-m-d', 'end_date' => 'date:Y-m-d'];
+    protected $casts = ['start_date' => 'date:Y-m-d', 'end_date' => 'date:Y-m-d', 'cost' => 'double'];
 
     public function location(): BelongsTo
     {

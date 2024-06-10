@@ -19,6 +19,7 @@ class ReservationService
         $reservation = new Reservation([
             'start_date' => $reservationRequest->startDate,
             'end_date' => $reservationRequest->endDate,
+            'cost' => $this->calculate($reservationRequest),
         ]);
         $reservation->location()->associate($reservationRequest->location);
         $reservation->save();
@@ -29,5 +30,12 @@ class ReservationService
         // @reconsider - reducing queries by using a mass update
 
         return $reservation;
+    }
+
+    public function calculate(ReservationRequest $reservationRequest): float
+    {
+        return (float) $reservationRequest->location->slots()
+            ->whereBetween('date', [$reservationRequest->startDate, $reservationRequest->endDate])
+            ->sum('price');
     }
 }
