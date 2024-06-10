@@ -31,7 +31,7 @@ RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
 RUN docker-php-ext-configure gd --with-external-gd
 RUN docker-php-ext-install gd
 
-# Install redis
+# Install redis @todo
 # RUN pecl install redis && docker-php-ext-enable redis
 
 # Install composer

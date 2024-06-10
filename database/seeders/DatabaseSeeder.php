@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Modules\Locations\Models\Location;
+use App\Modules\Locations\Models\LocationSlot;
+use App\Modules\Reservations\Models\Reservation;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +16,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::factory(10)->create();
+        Location::factory(2)->create();
+        LocationSlot::factory(15)->create();
+        Reservation::factory()->create();
     }
 }
