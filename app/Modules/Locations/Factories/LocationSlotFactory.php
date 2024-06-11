@@ -26,4 +26,9 @@ class LocationSlotFactory extends Factory
             'price' => $this->faker->randomFloat(max: 100),
         ];
     }
+
+    public function available(): Factory
+    {
+        return $this->state(fn () => ['available' => $this->faker->numberBetween(1, 10)]);
+    }
 }

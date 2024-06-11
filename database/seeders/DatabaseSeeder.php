@@ -2,12 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Modules\Locations\Models\Location;
 use App\Modules\Locations\Models\LocationSlot;
 use App\Modules\Reservations\Models\Reservation;
+use App\Modules\Users\Models\User;
 use Illuminate\Database\Seeder;
+
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DatabaseSeeder extends Seeder
 {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Reservations\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Modules\Auth\Controllers\Controller;
 use App\Modules\Reservations\Data\ReservationRequest;
 use App\Modules\Reservations\Http\Requests\StoreReservationRequest;
 use App\Modules\Reservations\Http\Resources\ReservationsResource;

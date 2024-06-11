@@ -35,7 +35,7 @@ class ReservationService
     public function calculate(ReservationRequest $reservationRequest): float
     {
         return (float) $reservationRequest->location->slots()
-            ->whereBetween('date', [$reservationRequest->startDate, $reservationRequest->endDate])
+            ->whereBetween('date', [$reservationRequest->startDate->toDateString(), $reservationRequest->endDate->toDateString()])
             ->sum('price');
     }
 }

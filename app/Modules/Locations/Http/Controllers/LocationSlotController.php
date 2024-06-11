@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace App\Modules\Locations\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Modules\Auth\Controllers\Controller;
 use App\Modules\Locations\Http\Requests\StoreSlotRequest;
+use App\Modules\Locations\Http\Services\LocationService;
 use App\Modules\Locations\Models\LocationSlot;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Gate;
 
 class LocationSlotController extends Controller
 {
+    public function __construct(private readonly LocationService $locationService)
+    {
+    }
+
     public function index(): Collection
     {
         return LocationSlot::all(); // @todo use ApiResource
@@ -19,12 +24,7 @@ class LocationSlotController extends Controller
 
     public function store(StoreSlotRequest $request): LocationSlot
     {
-        // @todo use Action or Repository/Service
-        return LocationSlot::updateOrCreate(
-            $request->safe()->only(['date', 'location_id']),
-            ['available' => $request->validated('available'), 'price' => $request->validated('price')]
-        );
-        // @todo use ApiResource
+        return $this->locationService->upsertSlot($request); // @todo use ApiResource
     }
 
     public function show(LocationSlot $locationSlot): LocationSlot
