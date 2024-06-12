@@ -27,7 +27,7 @@ class ReservationService
         $reservation->getPeriod()->forEach(
             static fn (Carbon $day) => LocationSlot::whereBelongsTo($reservationRequest->location)->where('date', $day)->decrement('available')
         );
-        // @reconsider - reducing queries by using a mass update
+        // @note - reducing queries by using a mass update
 
         return $reservation;
     }
@@ -37,5 +37,17 @@ class ReservationService
         return (float) $reservationRequest->location->slots()
             ->whereBetween('date', [$reservationRequest->startDate->toDateString(), $reservationRequest->endDate->toDateString()])
             ->sum('price');
+    }
+
+    /**
+     * Cancel the reservation (for now - we just release vacancies and delete a reservation)
+     */
+    public function cancel(Reservation $reservation): void
+    {
+        $reservation->getPeriod()->forEach(
+            static fn (Carbon $day) => LocationSlot::whereBelongsTo($reservation->location)->where('date', $day)->increment('available')
+        );
+        $reservation->delete();
+        // @note - soft-deleting/status.
     }
 }

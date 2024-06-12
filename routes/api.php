@@ -11,3 +11,4 @@ Route::apiResources([
     'reservations' => ReservationController::class,
 ]);
 Route::post('reservations/calculate', [ReservationController::class, 'calculate'])->name('reservations.calculate');
+Route::put('reservations/{reservation}/cancel', [ReservationController::class, 'cancel'])->name('reservations.cancel');

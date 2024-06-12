@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Modules\Reservations\Http\Controllers;
 
 use App\Modules\Auth\Controllers\Controller;
+use App\Modules\Misc\Responses\ApiResponse;
 use App\Modules\Reservations\Data\ReservationRequest;
 use App\Modules\Reservations\Http\Requests\StoreReservationRequest;
-use App\Modules\Reservations\Http\Resources\ReservationsResource;
+use App\Modules\Reservations\Http\Resources\ReservationResource;
 use App\Modules\Reservations\Models\Reservation;
 use App\Modules\Reservations\Services\ReservationService;
 use Illuminate\Http\JsonResponse;
@@ -20,28 +21,35 @@ class ReservationController extends Controller
     }
 
     /**
-     * @return AnonymousResourceCollection<ReservationsResource>
+     * @return AnonymousResourceCollection<ReservationResource>
      */
     public function index(): AnonymousResourceCollection
     {
-        return ReservationsResource::collection(Reservation::all());
+        return ReservationResource::collection(Reservation::all());
     }
 
     public function calculate(StoreReservationRequest $request): JsonResponse
     {
-        return response()->json(['data' => [
+        return ApiResponse::success([
             'price' => $this->reservationService->calculate(ReservationRequest::fromHttpRequest($request)),
-            'currency' => 'EUR', // @todo from config
-        ]]);
+            'currency' => 'EUR', // @todo config
+        ]);
     }
 
-    public function store(StoreReservationRequest $request): ReservationsResource
+    public function store(StoreReservationRequest $request): ReservationResource
     {
-        return new ReservationsResource($this->reservationService->create(ReservationRequest::fromHttpRequest($request)));
+        return new ReservationResource($this->reservationService->create(ReservationRequest::fromHttpRequest($request)));
     }
 
-    public function show(Reservation $reservation): ReservationsResource
+    public function show(Reservation $reservation): ReservationResource
     {
-        return new ReservationsResource($reservation);
+        return new ReservationResource($reservation);
+    }
+
+    public function cancel(Reservation $reservation): JsonResponse
+    {
+        $this->reservationService->cancel($reservation);
+
+        return ApiResponse::success(message: 'Reservation has been cancelled.');
     }
 }

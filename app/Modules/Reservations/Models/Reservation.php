@@ -26,7 +26,7 @@ class Reservation extends Model
 
     public function getLength(): CarbonInterval
     {
-        return $this->end_date->diff($this->start_date);
+        return $this->start_date->diff($this->end_date->endOfDay());
     }
 
     public function getPeriod(): CarbonPeriod

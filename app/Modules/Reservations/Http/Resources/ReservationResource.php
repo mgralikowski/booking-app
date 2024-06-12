@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /** @mixin Reservation */
-class ReservationsResource extends JsonResource
+class ReservationResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
@@ -18,7 +18,7 @@ class ReservationsResource extends JsonResource
             'location' => $this->location,
             'start_date' => $this->start_date->toDateString(),
             'end_date' => $this->end_date->toDateString(),
-            'days' => $this->getLength()->d,
+            'days' => ceil($this->getLength()->totalHours / 24), // same date = 1 day
             'cost' => $this->cost,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
