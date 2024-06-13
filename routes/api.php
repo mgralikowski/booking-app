@@ -2,7 +2,7 @@
 
 use App\Modules\Locations\Http\Controllers\LocationController;
 use App\Modules\Locations\Http\Controllers\LocationSlotController;
-use App\Modules\Reservations\Http\Controllers\ReservationController;
+use App\Modules\Reservations\Http\Controllers\Api\ReservationController;
 use Illuminate\Support\Facades\Route;
 
 Route::apiResources([

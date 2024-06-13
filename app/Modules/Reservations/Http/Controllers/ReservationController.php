@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Modules\Reservations\Http\Controllers;
 
 use App\Modules\Auth\Controllers\Controller;
-use App\Modules\Misc\Responses\ApiResponse;
+use App\Modules\Locations\Models\Location;
 use App\Modules\Reservations\Data\ReservationRequest;
 use App\Modules\Reservations\Http\Requests\StoreReservationRequest;
-use App\Modules\Reservations\Http\Resources\ReservationResource;
 use App\Modules\Reservations\Models\Reservation;
 use App\Modules\Reservations\Services\ReservationService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ReservationController extends Controller
 {
@@ -20,36 +20,25 @@ class ReservationController extends Controller
     {
     }
 
-    /**
-     * @return AnonymousResourceCollection<ReservationResource>
-     */
-    public function index(): AnonymousResourceCollection
+    public function index(): Response
     {
-        return ReservationResource::collection(Reservation::all());
-    }
-
-    public function calculate(StoreReservationRequest $request): JsonResponse
-    {
-        return ApiResponse::success([
-            'price' => $this->reservationService->calculate(ReservationRequest::fromHttpRequest($request)),
-            'currency' => 'EUR', // @todo config
+        return Inertia::render('Modules/Reservations/Index', [
+            'reservations' => Reservation::with('location')->get(),
+            'flash' => (bool) session()->get('success'),
         ]);
     }
 
-    public function store(StoreReservationRequest $request): ReservationResource
+    public function create(): Response
     {
-        return new ReservationResource($this->reservationService->create(ReservationRequest::fromHttpRequest($request)));
+        return Inertia::render('Modules/Reservations/Form', [
+            'locations' => Location::all(),
+        ]);
     }
 
-    public function show(Reservation $reservation): ReservationResource
+    public function store(StoreReservationRequest $request): RedirectResponse
     {
-        return new ReservationResource($reservation);
-    }
+        $this->reservationService->create(ReservationRequest::fromHttpRequest($request));
 
-    public function cancel(Reservation $reservation): JsonResponse
-    {
-        $this->reservationService->cancel($reservation);
-
-        return ApiResponse::success(message: 'Reservation has been cancelled.');
+        return redirect()->route('reservations.index')->with('success', 'Reservation created successfully!');
     }
 }
