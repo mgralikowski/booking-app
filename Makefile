@@ -1,12 +1,12 @@
-.PHONY: info
+.PHONY: *
 
 CONTAINER_PHP=app
 
-info: ## Display some debug information
-	@docker exec ${CONTAINER_PHP} php artisan about
-
 start: ## Start all containers
 	@docker compose up --force-recreate -d
+
+about: ## Display some debug information
+	@docker exec ${CONTAINER_PHP} php artisan about
 
 stop: ## Stop all containers
 	@docker compose down

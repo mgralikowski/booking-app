@@ -24,12 +24,17 @@ RUN apt-get update && apt-get install -y \
     libgd-dev
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-#Mine
 
 # Install extensions
 RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
 RUN docker-php-ext-configure gd --with-external-gd
 RUN docker-php-ext-install gd
+
+RUN apt-get -y update \
+&& apt-get install -y libicu-dev \
+&& docker-php-ext-configure intl \
+&& docker-php-ext-install intl \
+&& docker-php-ext-enable intl
 
 # Install redis @todo
 # RUN pecl install redis && docker-php-ext-enable redis

@@ -13,7 +13,7 @@ class LocationFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
+            'name' => $this->faker->randomElement(['The Plaza', 'Hotel Ritz', 'Taj Mahal Palace', 'Belmond Copacabana Palace']),
             'address' => $this->faker->address(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
