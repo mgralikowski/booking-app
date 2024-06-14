@@ -6,6 +6,7 @@ namespace Tests\Modules\Reservations\Http\Controllers;
 
 use App\Modules\Locations\Models\Location;
 use App\Modules\Locations\Models\LocationSlot;
+use App\Modules\Users\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,9 +16,11 @@ class ReservationControllerTest extends TestCase
 
     public function testStore(): void
     {
+        $this->actingAs(User::factory()->create());
+
         $location = $this->standardLocationAndSlots();
 
-        $response = $this->postJson(route('reservations.store'), ['start_date' => '2024-06-10', 'end_date' => '2024-06-12', 'location_id' => $location->getKey()]);
+        $response = $this->postJson(route('api.reservations.store'), ['start_date' => '2024-06-10', 'end_date' => '2024-06-12', 'location_id' => $location->getKey()]);
         $response->assertStatus(201);
         $response->assertJsonPath('data.id', 1);
         $response->assertJsonPath('data.cost', 150);
@@ -30,7 +33,7 @@ class ReservationControllerTest extends TestCase
         $expectedPrice = 90;
         $location = $this->standardLocationAndSlots();
 
-        $response = $this->postJson(route('reservations.calculate'), ['start_date' => '2024-06-10', 'end_date' => '2024-06-11', 'location_id' => $location->getKey()]);
+        $response = $this->postJson(route('api.reservations.calculate'), ['start_date' => '2024-06-10', 'end_date' => '2024-06-11', 'location_id' => $location->getKey()]);
         $response->assertStatus(200);
         $response->assertJson(['data' => ['price' => $expectedPrice, 'currency' => 'EUR']]);
     }
@@ -42,7 +45,7 @@ class ReservationControllerTest extends TestCase
         // MISSING
         LocationSlot::factory()->create(['location_id' => $location->getKey(), 'date' => '2024-06-12', 'price' => 50]);
 
-        $response = $this->postJson(route('reservations.calculate'), ['start_date' => '2024-06-10', 'end_date' => '2024-06-12', 'location_id' => $location->getKey()]);
+        $response = $this->postJson(route('api.reservations.calculate'), ['start_date' => '2024-06-10', 'end_date' => '2024-06-12', 'location_id' => $location->getKey()]);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('start_date');
@@ -51,7 +54,7 @@ class ReservationControllerTest extends TestCase
     public function testCalculateWhenLocationIsUnavailable(): void
     {
         $location = $this->standardLocationAndSlots();
-        $response = $this->postJson(route('reservations.calculate'), ['start_date' => '2024-05-13', 'end_date' => '2024-05-14', 'location_id' => $location->getKey()]);
+        $response = $this->postJson(route('api.reservations.calculate'), ['start_date' => '2024-05-13', 'end_date' => '2024-05-14', 'location_id' => $location->getKey()]);
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('start_date');
     }
@@ -59,7 +62,7 @@ class ReservationControllerTest extends TestCase
     public function testCalculateOnInvalidRange(): void
     {
         $location = $this->standardLocationAndSlots();
-        $response = $this->postJson(route('reservations.calculate'), ['start_date' => '2024-05-10', 'end_date' => '2024-02-09', 'location_id' => $location->getKey()]);
+        $response = $this->postJson(route('api.reservations.calculate'), ['start_date' => '2024-05-10', 'end_date' => '2024-02-09', 'location_id' => $location->getKey()]);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('start_date');
@@ -67,7 +70,7 @@ class ReservationControllerTest extends TestCase
 
     public function testCalculateWhenLocationIsMissing(): void
     {
-        $response = $this->postJson(route('reservations.calculate'), ['start_date' => '2024-05-10', 'end_date' => '2024-02-09']);
+        $response = $this->postJson(route('api.reservations.calculate'), ['start_date' => '2024-05-10', 'end_date' => '2024-02-09']);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('location_id');
